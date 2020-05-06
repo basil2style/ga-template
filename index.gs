@@ -15,7 +15,13 @@ function createMenu(){
   const menu = ui.createMenu("AliItemExtractor");
   
   menu.addItem("Show UI","loadSidebar");
+  menu.addSeparator();
+  menu.addItem("HELP","helpFn");
   menu.addToUi();
+}
+
+function helpFn(){
+  SpreadsheetApp.getUi().prompt("HELP");
 }
 
 //To invoke the menu when we launched the Google Sheet
