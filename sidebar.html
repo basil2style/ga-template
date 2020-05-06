@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Content here -->
+        <h4>Welcome</h4>
+        <div>
+            <div id="form-group">
+                <label for="qty-received">Quantity</label>
+                <input type="text" class="form-control" id="qty-received" required>
+            </div>
+            <label for="item-name">Item Name</label>
+            <select class="form-control" id="item-name">
+            </select>
+        </div>
+        <br>
+        <button id="mainButton" class="btn btn-primary">Submit</button>
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <script>
+        //
+        function afterButtonClicked() {
+            if(validate()) {
+            //   console.log("Validate val: "+validate());
+              var item = document.getElementById("item-name");
+              var qty = document.getElementById("qty-received");
+              var rowData = { item: item.value, qty: qty.value };
+            
+              google.script.run.withSuccessHandler(afterSubmit).addNewRow(rowData)
+            } else {
+            
+            }
+        }
+        
+        //Validating input fields
+        function validate(){
+           var fieldsToValidate = document.querySelectorAll("#form-group input");
+           return Array.prototype.every.call(fieldsToValidate, function(el){
+             return el.checkValidity();
+           });
+        }
+        
+        //Resetting quantity value
+        function afterSubmit(e) {
+             var qty = document.getElementById("qty-received");
+             console.log("QTY: "+qty);
+             qty = "";
+        }
+        
+        //Launch event when the sidebar loads
+        function afterSidebarLoads() {
+           google.script.run.withSuccessHandler(afterOptionsReturned).getDataFromSheet();
+        }
+        
+        function afterOptionsReturned(arrayOfArrays){
+          var item = document.getElementById("item-name");
+          
+          arrayOfArrays.forEach(function(r) {
+             var option = document.createElement("option");
+             console.log("option Val: "+r[0]);
+             option.textContent = r[0];
+             item.appendChild(option);
+          })
+        }
+        //When the mainButton is clicked
+        document.getElementById("mainButton").addEventListener("click", afterButtonClicked);
+        
+        //DOM content event handler
+        document.addEventListener("DOMContentLoaded", afterSidebarLoads);
+    </script>
+</body>
+
+</html>
